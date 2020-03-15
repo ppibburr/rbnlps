@@ -1,0 +1,14 @@
+#!/usr/bin/env ruby
+
+$: << File.expand_path("#{File.dirname(__FILE__)}/../lib/")
+
+module RbNLPS
+  class Service
+    def self.opts; @opts||={} end
+    p opts[:silent] = ARGV.delete("--silent")
+  end
+end
+
+require 'sinatra'
+
+load "rbnlps/service.rb"

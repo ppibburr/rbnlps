@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+
+body, html {
+  padding:0;
+  margin:0;
+  min-height:90vh;
+  min-width:100vw;
+  max-width:100vw !important;
+}
+
+#main {
+  max-height:100vh !important;
+}
+
+#results {
+  min-height:78vh;
+}
+
+textarea {
+width :100%;
+}
+
+
+
+
+.flex {
+  display:inline-flex;
+  flex:0.33;
+}
+
+.flex * {
+  flex:0.33;
+}
+
+#ctrls {
+  min-width:100%;
+}
+
+#send {
+  flex: 0.33;
+}
+
+#volume button {
+  margin:0;
+  padding:0;
+  width:0;
+  flex:0.33;
+}
+
+#player button {
+  margin:0;
+  padding:0;
+  width:0;
+  flex:0.33;
+}
+
+
+
+</style>
+
+<script>
+function send() {
+  x((e=document.getElementsByTagName('textarea')[1]).value, function(xhr) {
+    e=document.getElementsByTagName('textarea')[0]
+    e.value += xhr.responseText;
+    e.scrollTop = e.scrollHeight;  
+  })
+  e.value='';
+}
+
+function x(t, c) {
+  var xhr = new XMLHttpRequest();
+  xhr.open('POST', '/spoke', true);
+
+  //Send the proper header information along with the request
+  xhr.setRequestHeader('Content-Type', 'text/plain');
+
+  xhr.onreadystatechange = function() { // Call a function when the state changes.
+    if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
+      c(xhr);
+    }
+  }
+  xhr.send(t);
+}
+
+function play() {
+  x('toggle');
+}
+
+function prev() {
+  x('back');
+}
+
+function next() {
+  x('next');
+}
+
+function vdown() {
+  x('volume down');
+}
+
+function vup() {
+  x('volume up');
+}
+
+</script>
+</head>
+<body>
+<div id=main>
+<textarea id=results placeholder="Log results"></textarea>
+<div id=input>
+<textarea placeholder="type your commands here"></textarea></div>
+<div id=ctrls class=flex>
+<br><div id=player class=flex><button onclick='prev();'>&lt;&lt;</button><button onclick='play();'>||&gt;</button><button onclick='next();'>&gt;&gt;</button><div></div></div>
+<button id=send onclick='send();'>Send</button>
+<div id=volume class=flex><div></div><button onclick='vdown();'>-</button><button onclick='vup();'>+</button></div>
+</div>
+<script>
+document.getElementsByTagName('textarea')[1].addEventListener('keydown', function(e) {
+	if(e.keyCode == 13 && e.ctrlKey) {
+		send();
+		e.preventDefault();
+	}
+});
+</script>
+</body>
+</div>
+</html>  

@@ -1,0 +1,5 @@
+say hi
+please turn off the lamp
+turn on shed lamp
+toggle shed lamp
+play rammstein
