@@ -3,3 +3,44 @@ please turn off the lamp
 turn on shed lamp
 toggle shed lamp
 play rammstein
+say hi
+say hello
+turn on shed lamp
+what is orange
+what is my ip
+play rammstein
+set volume 33
+set volume 66
+mute
+pause
+say hello
+what is playing
+pause
+text matt hi
+text matt that hi
+message matt that hi
+email matt that hi
+play rammstein from local
+
+play rammstein
+pause playback
+pauseplayback
+pause
+pause playback
+pause on playback
+pause playback
+status of playback
+status of shed lamp
+status of playback
+toggle playback
+status of playback
+toggle mute playback
+status of playback
+toggle mute playback
+play rammstein
+status of playback
+set volume 33
+play rammstein
+status of playback
+play rammstein
+status of shed lamp

@@ -41,10 +41,11 @@ end
 
 module RbNLPS
   module MediaDevice
-    include Device
+    extend UI
+
     include Media
     include Speaker
-    
+    include Device    
     def initialize *o
       super
       

@@ -13,7 +13,8 @@ module RbNLPS
     def stop;end
     def next;end
     def prev;end
-    def volume i;end
+    def max_volume; 150; end
+    def volume i=nil;end
     def append f; end
     def << f; append f; end
     def load f, opts={}; end

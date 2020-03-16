@@ -46,6 +46,8 @@ require 'rbnlps/traits'
       end
     end
     
+    def status resp={}; end
+    
     def to_json *o
       JSON.pretty_generate(@config)
     end

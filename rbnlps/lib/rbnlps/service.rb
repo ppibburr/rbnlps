@@ -6,6 +6,8 @@ require 'sinatra'
 $: << File.dirname(__FILE__)+"/../"
 
 require 'rbnlps/utils'
+require 'rbnlps/ui'
+
 require "rbnlps/skill"
 require "rbnlps/skills/default"
 
@@ -16,6 +18,14 @@ module RbNLPS
     end
     @port = 4567
   end
+end
+
+get "/css/:file" do
+  send_file "./public/css/#{params[:file]}"
+end
+
+get "/js/:file" do
+  send_file "./public/js/#{params[:file]}"
 end
 
 get "/get-file" do
@@ -39,11 +49,15 @@ get "/device/?" do
   
   next "you got no skill lol" unless skill
   
-  skill.ui()
+  RbNLPS::UI::Builder.new(skill).to_s
 end
 
 get "/devices/?" do 
   RbNLPS::Device::UI.list()
+end
+
+get "/playback/?" do
+  RbNLPS::UI::Builder.new(RbNLPS::Playback.instance).to_s
 end
 
 get "/api/status/?" do

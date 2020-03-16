@@ -1,5 +1,5 @@
 require 'mpv'
-require '/home/ppibburr/git/0RB/lib/orb/utils.rb'
+require 'rbnlps/utils.rb'
 
 module PBR
   module MPVPlayer
@@ -28,7 +28,7 @@ module PBR
     
     def state
       {
-        state:     get_property("pause"),
+        state:     !get_property("pause"),
         n_items:   get_property("playlist-count"),
         nth_item:  get_property("playlist-pos"),
         title:     get_property("media-title"),

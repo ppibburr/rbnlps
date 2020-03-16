@@ -1,3 +1,5 @@
+$: << File.join(File.expand_path(File.dirname(__FILE__)), "..", "..")
+require "rbnlps/skill"
 
 tc = class TuyaCloudDevice < RbNLPS::Skill
   require 'color'
@@ -86,12 +88,18 @@ tc = class TuyaCloudDevice < RbNLPS::Skill
     brightness (lvl/100)*255 
   end
   
-  def state resp={}
-    resp[:state] = device().controls.state         # true / false for on or off
+  def status resp={}
+    resp[:state] = {state: device().controls.state}         # true / false for on or off
+    state resp
+    resp
   end
   
-  def status resp={}; 
-    state resp;resp[:status] = resp[:state];
+  def state resp={}; 
+    status resp;
+
+    online(resp)
+    resp[:state][:online]=resp[:online]
+    resp[:status] = resp[:state];   
     resp[:controls] = controls
     resp
   end
@@ -99,6 +107,7 @@ tc = class TuyaCloudDevice < RbNLPS::Skill
   
   def online resp={}
     resp[:online] = device().controls.online        # true / false
+    resp
   end
   
   def brightness v=nil, resp={}

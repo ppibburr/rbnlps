@@ -13,15 +13,19 @@ module RbNLPS
       super(name: 'playback')
       
       ['/mute',
+      '/toggle/mute',
       '/unmute',
       '/pause',
       '/resume', '/toggle',
       '/stop',
       '/next',
       '/back'].each do |r|
-        intent(r) do
-          m = r.gsub("/",'').to_sym
-          send m
+        [r,d="#{r}/playback"].each do |r|
+          p d: d
+          intent(r) do
+            m = r.gsub("/",'').gsub("playback",'').to_sym
+            send m
+          end
         end
       end
       
@@ -32,8 +36,13 @@ module RbNLPS
       end
       
       intent "/status" do |params, resp={}|
-        resp[:status] = sink.state
-        resp[:status][:volume] = volume
+        resp[:status] = sink.state[:state]
+        resp[:state]  = state
+      end
+
+      intent "/status/of/playback" do |params, resp={}|
+        resp[:status] = sink.state[:state]
+        resp[:state]  = state
       end
 
       intent "/what/is/playing" do |params, resp={}|
@@ -67,7 +76,7 @@ module RbNLPS
     def volume lvl=nil
       if !lvl && !sink.is_a?(Speaker)
         `#{conf['onboard-speaker']['volume']['get']}` =~ /\[([0-9]+)\%\]/
-        return $1
+        return $1.to_i
       end
       
       if sink.is_a?(Speaker)
@@ -78,8 +87,10 @@ module RbNLPS
       end
     end
     
+    def togglemute; mute toggle: true; end
+    
     def mute bool=true, toggle: nil
-      `#{conf['onboard-speaker']['toggle']}`   if toggle
+      return `#{conf['onboard-speaker']['toggle']}`   if toggle
     
       #if sink.is_a?(Speaker)
         `#{conf['onboard-speaker']['mute']}`   if bool
@@ -87,8 +98,15 @@ module RbNLPS
       #end
     end
     
-    def muted?
+    def state; 
+      s=sink.state; 
+      s[:muted] = muted?
+      s[:volume] = volume
+      s
+    end
     
+    def muted?
+      `pacmd list-sinks | awk '/muted/ { print $2 }'`.strip != 'no' 
     end
     
     def unmute; mute false; end
@@ -97,7 +115,7 @@ module RbNLPS
     p OPTS: opts
       unless !is_a?(Speaker)
         return(priority do
-          `say #{opts.join(" ")} -t "#{text}"` 
+          `say #{opts.join(" ")} "#{text}"` 
         end) unless Service::opts[:silent]
       end
     end
@@ -108,12 +126,12 @@ module RbNLPS
       JSON.parse({
         'onboard-speaker': {
           'volume': {
-            set: "amixer -c 1 set 'Speaker' @lvl%",
-            get: "amixer -c 1 get 'Speaker' | grep \"[[0-9+]%]\""
+            set: "amixer -q -D pulse sset Master @lvl%",
+            get: "amixer -D pulse sget Master | grep \"[[0-9+]%]\""
           },
-          'mute':   'amixer -q sset Master mute',
-          'unmute': 'amixer -q sset Master unmute',
-          'toggle': 'amixer -q sset Master toggle'
+          'mute':   'amixer -q -D pulse sset Master mute',
+          'unmute': 'amixer -q -D pulse sset Master unmute',
+          'toggle': 'amixer -q -D pulse sset Master toggle'
         }
       }.to_json)
     end

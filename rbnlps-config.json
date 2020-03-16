@@ -6,7 +6,6 @@
     "sms-skill",
     "webhook-skill",
     "wikipedia-skill",
-    "alexa-skill",
     "tuya-cloud-skill"
   ]
 }

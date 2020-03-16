@@ -3,6 +3,7 @@ require "rbnlps/skill"
 
 module RbNLPS
   module SmartBox
+    extend UI
     include MediaDevice
     include HasMediaProviders
   end

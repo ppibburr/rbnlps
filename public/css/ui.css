@@ -1,0 +1,136 @@
+.rbnlps-skill {
+  margin: auto;
+  min-width: 50vw;
+  width:2;
+  border: solid 1px aliceblue;
+  border-radius: 0.3em;
+}
+
+.state {
+  padding: 1em;
+}
+
+.controls {
+  padding: 1em;
+}
+
+.control {
+  min-height: 1.3em;
+  background-color: teal;
+  border-radius: 0.2em;
+  border: solid 1px black;
+  text-align:center;
+  color: aliceblue;
+}
+
+.playback::before {
+  content: 'play';
+}
+
+.next::before {
+  content: '>>';
+}
+
+.prev::before {
+  content: '<<';
+}
+
+.playback.active::before {
+  content: 'pause';
+}
+.next {
+  flex: 1;
+}
+
+.prev {
+  flex: 1;
+}
+
+.volume {
+  flex: 1;
+}
+
+.playback {
+  flex: 3;
+}
+.type {
+  font-size: smaller;
+}
+.media {
+  display:flex;
+}
+
+.speaker {
+  display:flex;
+}
+.mute {
+  width:3em;
+}
+
+.mute::before {
+  content: "X";
+}
+
+      .switch .toggle {
+        margin: auto;
+        width: 20%;
+        border-radius: 50%;
+        line-height: 0;
+        background: #bcd6ff;
+        /* NECESSARY FOR TEXT */
+        position: relative;
+      }
+      
+      .switch .toggle:after {
+        content: "";
+        display: block;
+        padding-bottom: 100%;
+      }
+      .circle-txt {
+        position: absolute;
+        bottom: 50%;
+        width: 100%;
+        text-align: center;
+        /* NOT IMPORTANT */
+        font-family: arial, sans-serif;
+        font-size: 1.5em;
+        font-weight: bold;
+      }
+
+      .toggle {
+
+
+
+    align-self:center;
+      }
+      
+      .active {
+        background-color:yellow !important;
+      }
+      
+      .header { 
+      
+      }
+      
+      body {
+        background-color: #14192a;
+        color: cadetblue;
+      }
+      
+      .device {
+      display:flex;
+      flex-direction: column;
+      align-self: center;text-align:center;
+          border: solid 1px aliceblue;
+          padding: 0.6em;
+          border-radius: 0.3em;
+          margin: auto;
+          min-width:50vw;
+          width:2;
+          margin-bottom: 0.3em;
+      
+      }
+      .controls {
+        display: flex;
+        flex-direction:column;
+      }
