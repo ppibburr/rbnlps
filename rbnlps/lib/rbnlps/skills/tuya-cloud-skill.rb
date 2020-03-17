@@ -17,6 +17,14 @@ tc = class TuyaCloudDevice < RbNLPS::Skill
   def initialize n
     super(name: n)#'WW104/106 Smart Plug')
     
+    if (d=device()).controls.is_a?(TuyaCloud::Device::Light)
+      ui controls: {
+        light: {
+          brightness: {type: :slider, action: "", state: :brightness}
+        }
+      }
+    end
+    
     intent "/dim/:name/by/:percent/percent", name: @name do |params, resp={}|
       dim_by(params[:percent].to_i,resp)    
     end
@@ -52,6 +60,17 @@ tc = class TuyaCloudDevice < RbNLPS::Skill
     #$timer << proc do api.refresh_devices end           # Refresh the states of all devices
   end
  
+  
+  def self.device n
+    device = api.find_device_by_name(n)
+  end 
+ 
+  def device 
+    self.class.device(@name)
+  end 
+ 
+  def max_brightness;255;end
+ 
   api.devices.each do |d|
     self.new(d.name) unless RbNLPS::Skill.skills.find do |s| s.is_a?(TuyaCloudDevice) && s.name == d.name end
   end   
@@ -65,14 +84,6 @@ tc = class TuyaCloudDevice < RbNLPS::Skill
       end      
     end
   end 
-  
-  def self.device n
-    device = api.find_device_by_name(n)
-  end
-  
-  def device 
-    self.class.device(@name)
-  end
   
   def n;@name;end
   
@@ -89,14 +100,12 @@ tc = class TuyaCloudDevice < RbNLPS::Skill
   end
   
   def status resp={}
-    resp[:state] = {state: device().controls.state}         # true / false for on or off
     state resp
     resp
   end
   
   def state resp={}; 
-    status resp;
-
+    resp[:state] = {state: device().controls.state} 
     online(resp)
     resp[:state][:online]=resp[:online]
     resp[:status] = resp[:state];   

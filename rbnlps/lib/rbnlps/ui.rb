@@ -18,12 +18,13 @@ module RbNLPS
       
       def render type, data
         """
-        <div class='#{type}' id=#{type}>
+        <div class='#{type}-container' id=#{type}>
         #{
         
           if data.is_a?(Array)
             data.map do |a|
-              "  <div data-field='#{a}' data-name='#{ins.name}' class='#{a} #{ins.state.has_key?(a) ? 'state-value' : 'device-info'}' id='state-#{a}-#{id}'>#{a}: #{(ins.state.has_key?(a.to_sym) ? ins.state[a.to_sym] : ins.send(a)) || " --- "}</div>"
+            p INS: ins, s: ins.state
+              "  <div data-field='#{a}' data-name='#{ins.name}' class='#{a} #{ins.state[:state].has_key?(a) ? 'state-value' : 'device-info'}' id='state-#{a}-#{id}'>#{a}: <span class='value value-#{a}'>#{(ins.state[:state].has_key?(a.to_sym) ? ins.state[:state][a.to_sym] : ins.send(a)) || " --- "}</span></div>"
             end.join("\n        ")
           else
             data.map do |k,v|
@@ -45,7 +46,7 @@ module RbNLPS
       end
       
       def slider kk,vv
-        "<input type=range min=#{0} max=#{ins.max_volume} data-field='#{vv[:state]}' class='control slider #{kk}' id='#{kk}-#{id}' oninput=\"slide(this,'#{parse(vv[:action])}')\"></input>"
+        "<div class='slider-container slider-#{vv[:state]}'><input type=range min=#{0} max=#{ins.send("max_#{vv[:state]}")} data-field='#{vv[:state]}' class='control slider #{kk}' id='#{kk}-#{id}' oninput=\"slide(this,'#{parse(vv[:action])}')\"></input></div>"
       end
       
       def toggle kk,vv
@@ -57,11 +58,13 @@ module RbNLPS
       end
       
       def to_s
+        "<title>#{ins.name} | RbNLPS</title>"+
         "<link rel=stylesheet href=/css/ui.css />"+
         "<meta name='viewport' content='width=device-width, initial-scale=1'>"+
-        "\n<script src=/js/core.js></script>\n"+      
+        "\n<script src=/js/core.js></script>\n"+ 
+        "<div class=speak><div class=speak-controls><input id=speak type=text class=input-speak placeholder='...'></input><span class='control button' onclick=\"speak(document.getElementById('speak').value)\">?</span></div></div>" +    
         "<div id=#{id} data-name='#{ins.name}' class='#{ui_class}'>"+
-        ins.class.ui.map do |k,v|
+        ins.ui.map do |k,v|
           render k,v
         end.join+
         "</div>"
@@ -87,22 +90,6 @@ module RbNLPS
       
       return @ui
     end
-    
-    def self.extended cls
-      cls.singleton_class.send :define_method, :included do |s|
-        s.ui cls.ui
-        super s
-      end if !cls.is_a?(Class)
-      
-      cls.singleton_class.send :define_method, :inherited do |s|
-        s.class_eval do @ui = Skill.ui.clone end
-        s.ui cls.ui
-        
-        super s
-      end if cls.is_a?(Class)
-      
-      super cls
-    end
   end
   
   class Skill
@@ -114,6 +101,45 @@ module RbNLPS
      
     def type
       self.class.name.gsub("::",'-')
+    end
+    
+    def ui opts={}
+      unless @ui
+        @ui = aui = {}
+    
+        self.class.ancestors.find_all do |a| a.is_a?(UI) end.reverse.each do |a|
+          a.ui.each_pair do |k,v|
+            if aui[k]
+              if v.is_a?(Array)
+                aui[k].push(*v.find_all do |q| !aui[k].index(q) end)
+              elsif v.is_a?(Hash)
+                v.each_pair do |a,b|
+                  aui[k][a] = b.clone
+                end
+              end
+            else
+              aui[k] = v.clone
+            end 
+          end
+        end
+      end
+      
+      opts.each_pair do |k,v|
+        if @ui[k]
+          if v.is_a?(Array)
+            @ui[k].push(*v.find_all do |q| !@ui[k].index(q) end)
+          elsif v.is_a?(Hash)
+            v.each_pair do |a,b|
+              @ui[k][a] = b.clone
+            end
+          end
+        else
+          @ui[k] = v.clone
+        end 
+      end
+      
+      p opts: opts
+      return @ui
     end
   end    
     

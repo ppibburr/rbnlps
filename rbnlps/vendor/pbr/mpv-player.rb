@@ -16,7 +16,7 @@ module PBR
       Thread.new do
         @session = MPV::Session.new(user_args: ['--no-video', '--ytdl-format=251,171,bestaudio'])
         session.callbacks << method(:event)
-      end.join
+      end#.join
     end
     
     def load file

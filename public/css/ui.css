@@ -4,18 +4,20 @@
   width:2;
   border: solid 1px aliceblue;
   border-radius: 0.3em;
+  padding: 0.3em;
 }
 
-.state {
+.state-container {
   padding: 1em;
 }
 
-.controls {
+.controls-container {
   padding: 1em;
 }
 
 .control {
-  min-height: 1.3em;
+  line-height: 1.8em;
+  vertical-align: top;
   background-color: teal;
   border-radius: 0.2em;
   border: solid 1px black;
@@ -71,6 +73,41 @@
   content: "X";
 }
 
+.brightness {
+  min-width: calc(100%);
+}
+.slider-container {
+  flex: 1;
+}
+.slider {
+  min-width: calc(100%);
+}
+.slider-brightness::before {
+  content: "Brightness: ";
+}
+
+.current_sink {
+  font-size: smaller;
+}
+
+.speak {
+  width: 100vw;
+  display:flex;
+}
+
+.speak-controls {
+  margin: auto;
+  width: auto;
+  padding:0.6em;
+}
+
+.button {
+  width: 2em;
+  display: inline-block;
+}
+
+.value { font-weight:bold; }
+
       .switch .toggle {
         margin: auto;
         width: 20%;
@@ -106,9 +143,10 @@
       
       .active {
         background-color:yellow !important;
+        color: darkblue;
       }
       
-      .header { 
+      .header-container { 
       
       }
       
@@ -130,7 +168,7 @@
           margin-bottom: 0.3em;
       
       }
-      .controls {
+      .controls-container {
         display: flex;
         flex-direction:column;
       }

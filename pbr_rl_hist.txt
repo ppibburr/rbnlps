@@ -44,3 +44,9 @@ play rammstein
 status of playback
 play rammstein
 status of shed lamp
+status of playback
+status of shed lamp
+status of playback
+play rammstein
+status of playback
+play rammstein

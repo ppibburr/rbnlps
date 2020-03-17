@@ -18,12 +18,12 @@
   
   function toggle(id,a,c) {
     speak(a, function() {
-      speak('status of '+id.dataset.name, function(j) {
+      //speak('status of '+id.dataset.name, function(j) {
         //document.getElementById(id.id).innerText = j['status'];
-        _x = j['state'][id.dataset.field];
+        _x = id.classList.contains('active');//j['state'][id.dataset.field];
         console.log({x: _x});
         set_active(id,_x);
-      })
+      //})
     });
   }
   

@@ -9,8 +9,15 @@ module RbNLPS
   class Playback < Skill
     include Media
     include Speaker
+    
+    def current_sink
+      sink.class.name.gsub("::",'-')
+    end
+    
     def initialize *o
       super(name: 'playback')
+      
+      ui[:header] << :current_sink
       
       ['/mute',
       '/toggle/mute',
@@ -37,12 +44,12 @@ module RbNLPS
       
       intent "/status" do |params, resp={}|
         resp[:status] = sink.state[:state]
-        resp[:state]  = state
+        resp[:state]  = state[:state]
       end
 
       intent "/status/of/playback" do |params, resp={}|
         resp[:status] = sink.state[:state]
-        resp[:state]  = state
+        resp[:state]  = state[:state]
       end
 
       intent "/what/is/playing" do |params, resp={}|
@@ -103,6 +110,7 @@ module RbNLPS
       s[:muted] = muted?
       s[:volume] = volume
       s
+      {state: s}
     end
     
     def muted?
