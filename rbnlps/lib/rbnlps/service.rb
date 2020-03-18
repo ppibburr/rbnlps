@@ -7,7 +7,6 @@ $: << File.dirname(__FILE__)+"/../"
 
 require 'rbnlps/utils'
 require 'rbnlps/ui'
-
 require "rbnlps/skill"
 require "rbnlps/skills/default"
 
@@ -53,7 +52,15 @@ get "/device/?" do
 end
 
 get "/devices/?" do 
-  RbNLPS::Device::UI.list()
+  RbNLPS::UI.list(RbNLPS::Device)
+end
+
+get "/media/?" do 
+  RbNLPS::UI.list(RbNLPS::Media)
+end
+
+get "/tuya-cloud/?" do 
+  RbNLPS::UI.list(TuyaCloudDevice)
 end
 
 get "/playback/?" do
@@ -98,8 +105,9 @@ end
 
 DEVICES = ['192.168.1.108:4567']
 
-post "/spoke" do
-  spoke self, request.body.read
+post "/spoke/?" do
+  s=params.has_key? "silent"
+  spoke self, request.body.read, silent: s
 end
 
 post "/google" do

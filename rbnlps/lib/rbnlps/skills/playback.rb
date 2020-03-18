@@ -110,7 +110,6 @@ module RbNLPS
       s[:muted] = muted?
       s[:volume] = volume
       s
-      {state: s}
     end
     
     def muted?

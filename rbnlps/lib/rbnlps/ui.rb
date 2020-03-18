@@ -1,5 +1,23 @@
 module RbNLPS
   module UI
+    def self.list type
+      "<title>#{'Skill list'} | RbNLPS</title>"+
+      "<link rel=stylesheet href=/css/ui.css />"+
+      "<meta name='viewport' content='width=device-width, initial-scale=1'>"+
+      "\n<script src=/js/core.js></script>\n"+ 
+      "<div class=speak><div class=speak-controls><input id=speak type=text class=input-speak placeholder='...'></input><span class='control button' onclick=\"speak(document.getElementById('speak').value)\">?</span></div></div>" +    
+      "<div class=device-list>"+
+      Skill.skills.find_all do |s| s.is_a?(type) end.map do |s|
+        b=Builder.new(s)
+        "  <div class=rbnlps-skill data-name='#{s.name}'>"+
+        (s.ui[:summary]||={}).map do |k,v|
+          b.render(k,v)
+        end.join("\n")+
+        "</div>"
+      end.join("\n")+
+      "</div>"
+    end
+  
     class Builder
       attr_reader :ins
       def initialize ins
@@ -23,13 +41,13 @@ module RbNLPS
         
           if data.is_a?(Array)
             data.map do |a|
-            p INS: ins, s: ins.state
               "  <div data-field='#{a}' data-name='#{ins.name}' class='#{a} #{ins.state[:state].has_key?(a) ? 'state-value' : 'device-info'}' id='state-#{a}-#{id}'>#{a}: <span class='value value-#{a}'>#{(ins.state[:state].has_key?(a.to_sym) ? ins.state[:state][a.to_sym] : ins.send(a)) || " --- "}</span></div>"
             end.join("\n        ")
           else
             data.map do |k,v|
               "  <div class='#{k}' id='#{k}'>\n    "+
               v.map do |kk,vv|
+              p a: [k,v, kk,vv]
                 send vv[:type], kk,vv        
               end.join("\n    ")+
               "\n          </div>\n"
@@ -65,6 +83,7 @@ module RbNLPS
         "<div class=speak><div class=speak-controls><input id=speak type=text class=input-speak placeholder='...'></input><span class='control button' onclick=\"speak(document.getElementById('speak').value)\">?</span></div></div>" +    
         "<div id=#{id} data-name='#{ins.name}' class='#{ui_class}'>"+
         ins.ui.map do |k,v|
+          next if k == :summary
           render k,v
         end.join+
         "</div>"
@@ -97,7 +116,9 @@ module RbNLPS
     ui header: [
       :name,
       :type
-     ]
+     ], summary: {
+       header: [:name]
+     }
      
     def type
       self.class.name.gsub("::",'-')
@@ -154,6 +175,13 @@ module RbNLPS
           playback: {action: "toggle %name", type: :toggle, state: :state},
           next: {action: "", type: :button}
         }
+      }, summary: {
+        state: [:title],
+        controls: {
+          media: {
+            playback: {action: "toggle %name", type: :toggle, state: :state}
+          }
+        }
       }
   end      
   
@@ -163,6 +191,12 @@ module RbNLPS
          speaker: {
            mute: {action: "toggle mute %name", type: :toggle, state: :muted},
            volume: {action: "set volume to %lvl on %name", type: :slider, state: :volume}
+         }
+       }, summary: {
+         controls: {
+           speaker: {
+             volume: {action: "set volume to %lvl on %name", type: :slider, state: :volume}
+           }
          }
        }
   end

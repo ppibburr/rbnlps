@@ -5,7 +5,6 @@ module PBR
   module MPVPlayer
     attr_reader :session
     def event(e)
-      p({ media_player_event: e})
       if e['event'] == "playback-restart"
         Notify.send("Now playing...\n#{state[:title]}", image: 'media-playback-start')
       end

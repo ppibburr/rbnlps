@@ -50,6 +50,12 @@ module RbNLPS
          switch: {
            toggle: {state: :state, action: "toggle the %name", type: :toggle}
          }
+       }, summary: {
+         controls: {
+           switch: {
+             toggle: {state: :state, action: "toggle the %name", type: :toggle}
+           }
+         }
        }
   end
 end

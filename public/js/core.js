@@ -36,7 +36,8 @@
   }
   
   function update() {
-	  id=document.querySelector('.rbnlps-skill');
+	  l=document.querySelectorAll('.rbnlps-skill');
+	  l.forEach(function(id) {
 	  updates=[id.querySelectorAll('.toggle'),
 	  id.querySelectorAll('.state-value'),
 	  id.querySelectorAll('.slider')]
@@ -61,6 +62,7 @@
 			e.value = j['state'][e.dataset.field]; 
 		 }); 
 	  });
+    });
   }
 
   window.setInterval(function() {

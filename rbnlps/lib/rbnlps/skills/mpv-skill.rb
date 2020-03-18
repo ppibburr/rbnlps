@@ -39,6 +39,11 @@ class MPVSkill < RbNLPS::Skill
     add_provider LocalProvider.new("local")
     add_provider YouTubePlayer.new()    
   end
+  
+  def state
+    {state: super}
+  end
+  
   skill multi: false
   def self.default; @default ||= new; end
   default
